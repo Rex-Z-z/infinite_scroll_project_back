@@ -19,22 +19,6 @@ public class ApplicationConfig {
 
     private final UserRepo userRepo;
 
-    // 1. Define the UserDetailsService (How to find a user in the DB)
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return username -> userRepo.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
-
-    // 2. Define the AuthenticationProvider (The logic that checks password vs DB)
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
-
     // 3. Define the AuthenticationManager (The bean that was missing!)
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
