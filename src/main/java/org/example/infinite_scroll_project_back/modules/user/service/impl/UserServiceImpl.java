@@ -32,4 +32,10 @@ public class UserServiceImpl implements UserService {
 
         userRepo.save(user);
     }
+
+    // 3. Check if user exists by email
+    @Override
+    public boolean userExists(String email) {
+        return userRepo.findByEmail(email).isPresent();
+    }
 }
