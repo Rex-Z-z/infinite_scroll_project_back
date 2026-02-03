@@ -10,11 +10,24 @@ import java.util.List;
 public class User implements UserDetails {
     private Long id;
     private String email;
+    private String username;
     private String password;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() { return List.of(); }
+
     @Override
     public String getUsername() { return email; }
-    // Return true for the boolean flags (isAccountNonExpired, etc.)
+
+    @Override
+    public boolean isAccountNonExpired() { return true; }
+
+    @Override
+    public boolean isAccountNonLocked() { return true; }
+
+    @Override
+    public boolean isCredentialsNonExpired() { return true; }
+
+    @Override
+    public boolean isEnabled() { return true; }
 }

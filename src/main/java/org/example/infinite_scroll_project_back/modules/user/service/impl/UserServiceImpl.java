@@ -16,20 +16,19 @@ public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
 
-    // 1. This method is required by Spring Security for Login
+    // 1. Load user by email OR username
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepo.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+    public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
+        // Search by email OR username
+        return userRepo.findByEmailOrUsername(identifier)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with identifier: " + identifier));
     }
 
-    // 2. This is your custom method for Registration
+    // 2. Register new user
     @Override
     public void registerUser(User user) {
-        // Always hash the password before saving!
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
-
         userRepo.save(user);
     }
 

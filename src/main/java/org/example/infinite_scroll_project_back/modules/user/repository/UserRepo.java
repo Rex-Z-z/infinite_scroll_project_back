@@ -12,6 +12,11 @@ public interface UserRepo {
     @Select("SELECT * FROM users WHERE email = #{email}")
     Optional<User> findByEmail(String email);
 
-    @Insert("INSERT INTO users(email, password) VALUES(#{email}, #{password})")
+    // 1. Find user by email or username
+    @Select("SELECT * FROM users WHERE email = #{identifier} OR username = #{identifier}")
+    Optional<User> findByEmailOrUsername(String identifier);
+
+    // 2. Register new user
+    @Insert("INSERT INTO users(email, username, password) VALUES(#{email}, #{username}, #{password})")
     void save(User user);
 }

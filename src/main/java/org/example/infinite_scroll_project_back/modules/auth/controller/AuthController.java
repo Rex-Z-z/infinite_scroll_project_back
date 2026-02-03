@@ -19,30 +19,32 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final UserService userService;
 
-    // Login remains mostly the same
+    // 1. Login with Email or Username
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody AuthenticationRequest request) {
+        // Determine the login identifier (Email or Username)
+        // If the frontend sends data in the 'email' field, we use that.
+        // If it sends 'username', we use that.
+        String identifier = (request.getEmail() != null && !request.getEmail().isEmpty())
+                ? request.getEmail()
+                : request.getUsername();
+
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+                new UsernamePasswordAuthenticationToken(identifier, request.getPassword())
         );
-        // We can cast details to UserDetails or just use loadUserByUsername
-        final UserDetails user = userService.loadUserByUsername(request.getEmail());
+
+        final UserDetails user = userService.loadUserByUsername(identifier);
         return ResponseEntity.ok(jwtUtil.generateToken(user));
     }
 
+    // 2. Register new user
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody AuthenticationRequest request) {
-        // User already exist
-        if (userService.userExists(request.getEmail())) {
-            return ResponseEntity.badRequest().body("User already exists");
-        }
-
-        // Create a new User object
         User newUser = new User();
         newUser.setEmail(request.getEmail());
+        newUser.setUsername(request.getUsername());
         newUser.setPassword(request.getPassword());
 
-        // Use the service to save it (which handles hashing)
         userService.registerUser(newUser);
 
         return ResponseEntity.ok("User registered successfully");
