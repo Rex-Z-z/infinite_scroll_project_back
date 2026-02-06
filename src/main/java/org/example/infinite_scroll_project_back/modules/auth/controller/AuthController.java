@@ -2,6 +2,7 @@ package org.example.infinite_scroll_project_back.modules.auth.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.example.infinite_scroll_project_back.modules.auth.dto.ResetPasswordRequest;
 import org.example.infinite_scroll_project_back.modules.user.model.User;
 import org.example.infinite_scroll_project_back.modules.user.service.UserService;
 import org.example.infinite_scroll_project_back.security.JwtUtil;
@@ -52,5 +53,15 @@ public class AuthController {
         userService.registerUser(newUser);
 
         return ResponseEntity.ok("User registered successfully");
+    }
+
+    @Operation(
+            summary = "Reset Password",
+            description = "Resets the user's password using their email."
+    )
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
+        userService.resetPassword(request.getEmail(), request.getNewPassword());
+        return ResponseEntity.ok("Password updated successfully");
     }
 }

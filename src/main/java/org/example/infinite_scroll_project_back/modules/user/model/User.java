@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 public class User implements UserDetails {
     private Long id;
+    private String profileImageUrl;
     private String email;
     private String username;
     private String password;
