@@ -1,5 +1,6 @@
 package org.example.infinite_scroll_project_back.modules.auth.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.example.infinite_scroll_project_back.modules.user.model.User;
 import org.example.infinite_scroll_project_back.modules.user.service.UserService;
@@ -19,12 +20,12 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final UserService userService;
 
-    // 1. Login with Email or Username
+    @Operation(
+            summary = "User Login",
+            description = "Authenticates a user using either email or username along with the password. Returns a JWT token upon successful authentication."
+    )
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody AuthenticationRequest request) {
-        // Determine the login identifier (Email or Username)
-        // If the frontend sends data in the 'email' field, we use that.
-        // If it sends 'username', we use that.
         String identifier = (request.getEmail() != null && !request.getEmail().isEmpty())
                 ? request.getEmail()
                 : request.getUsername();
@@ -37,7 +38,10 @@ public class AuthController {
         return ResponseEntity.ok(jwtUtil.generateToken(user));
     }
 
-    // 2. Register new user
+    @Operation(
+            summary = "User Registration",
+            description = "Registers a new user with the provided email, username, and password."
+    )
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody AuthenticationRequest request) {
         User newUser = new User();
