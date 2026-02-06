@@ -70,10 +70,8 @@ public class UserServiceImpl implements UserService {
     // 6. Upload profile image
     @Override
     public String uploadProfileImage(String username, MultipartFile file) {
-        // 1. Upload to Cloudinary and get the URL
-        String imageUrl = cloudinaryService.uploadFile(file);
-
-        // 2. Update the database with the cloud URL
+        String customPublicId = "profile_" + username;
+        String imageUrl = cloudinaryService.uploadFile(file, customPublicId);
         userRepo.updateProfileImage(username, imageUrl);
 
         return imageUrl;

@@ -16,16 +16,15 @@ public class CloudinaryService {
 
     private final Cloudinary cloudinary;
 
-    public String uploadFile(MultipartFile file) {
+    // Uploads a file to Cloudinary with a specific public ID (e.g., "profile_username")
+    public String uploadFile(MultipartFile file, String publicId) {
         try {
-            // Upload the file to Cloudinary
             Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
-                    "public_id", UUID.randomUUID().toString(), // Generate a unique name
-                    "overwrite", true,
+                    "public_id", publicId,   // Use the specific name we pass (e.g., "profile_username")
+                    "overwrite", true,       // Explicitly tell Cloudinary to replace the old one
+                    "invalidate", true,      // Tell CDN to flush the cached version
                     "resource_type", "image"
             ));
-
-            // Return the secure URL (https)
             return uploadResult.get("secure_url").toString();
         } catch (IOException e) {
             throw new RuntimeException("Image upload failed", e);
